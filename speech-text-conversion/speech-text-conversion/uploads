@@ -1,0 +1,3 @@
+The `uploads` directory is intended to be a folder for storing uploaded files and generated audio files. Since it is a directory and not a file, it does not contain any specific contents. Therefore, the response for this request is:
+
+# This directory is used to store uploaded files and generated audio files. It is created dynamically by the application if it does not already exist.

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text and Speech Converter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <h1>Text To Speech Converter</h1>
+    </nav>
+    <main>
+        <form method="POST" enctype="multipart/form-data">
+            <textarea name="text" placeholder="Enter text"></textarea>
+            <br>
+            <label for="language">Select Language:</label>
+            <select name="language">
+                <option value="auto">Detect Language Automatically</option>
+                <option value="en">English</option>
+                <option value="bn">Bengali</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="pt">Portuguese</option>
+                <option value="ru">Russian</option>
+                <option value="zh">Chinese</option>
+                <option value="ar">Arabic</option>
+                <option value="hi">Hindi</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">Korean</option>
+                <option value="tr">Turkish</option>
+                <option value="nl">Dutch</option>
+                <option value="pl">Polish</option>
+                <option value="sv">Swedish</option>
+                <option value="uk">Ukrainian</option>
+                <option value="vi">Vietnamese</option>
+                <option value="id">Indonesian</option>
+            </select>
+            <br>
+            <label for="file">Or upload a text file:</label>
+            <input type="file" name="file" accept=".txt">
+            <br>
+            <button type="submit">Convert</button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        {% if message %}
+        <p>{{ message }}</p>
+        <audio controls preload="auto" id="audio-player">
+            <source src="{{ url_for('play', filename=audio) }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <a href="{{ url_for('download', filename=audio) }}" download><button>Download</button></a>
+        {% endif %}
+
+        {% if detected_language %}
+        <p>Detected Language: {{ detected_language }}</p>
+        {% endif %}
+
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    </main>
+    <div id="loader-overlay">
+        <div class="loader"></div>
+        <span class="loader-text">Processing...</span>
+    </div>
+    <script>
+        const form = document.querySelector('form');
+        const loader = document.getElementById('loader-overlay');
+        form.addEventListener('submit', function(e) {
+            loader.style.display = 'flex';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 3000); // 3 seconds
+        });
+    </script>
+</body>
+</html>

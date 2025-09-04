@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech Converter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Text to Speech Converter</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <textarea name="text" rows="5" cols="50" placeholder="Enter text here..."></textarea><br>
+            <label for="language">Select Language:</label>
+            <select name="language">
+                <option value="auto">Auto Detect</option>
+                {% for code, name in LANGUAGES.items() %}
+                    <option value="{{ code }}">{{ name }}</option>
+                {% endfor %}
+            </select><br>
+            <input type="file" name="file" accept=".txt"><br>
+            <button type="submit">Convert</button>
+        </form>
+        {% if detected_language_name %}
+            <p>{{ detected_language_name }}</p>
+        {% endif %}
+        {% if message %}
+            <p>{{ message }}</p>
+            {% if audio %}
+                <audio controls>
+                    <source src="{{ url_for('play', filename=audio) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <a href="{{ url_for('download', filename=audio) }}">Download Audio</a>
+            {% endif %}
+        {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
